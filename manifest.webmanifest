@@ -1,0 +1,1 @@
+{"name":"Defect Scanner","short_name":"Defect Scanner","description":"Lokaler mobiler Bildvergleich und Fehlerbild-Datensammlung","start_url":"./index.html","scope":"./","display":"standalone","background_color":"#0c131b","theme_color":"#101923","orientation":"any","icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]}

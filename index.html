@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#101923"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Defect Scanner"><meta name="mobile-web-app-capable" content="yes"><meta name="description" content="Lokaler mobiler Defect Scanner für Bildvergleich und Fehlerbild-Datensammlung"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.svg" type="image/svg+xml"><title>Defect Scanner</title><link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar"><div class="brand"><span class="brandmark">DS</span><div><strong>Defect Scanner</strong><small>Lokale Bildprüfung · v0.1</small></div></div><span class="local-pill"><i></i> Nur lokal</span></header>
+<main>
+<section class="intro"><p class="eyebrow">MOBILE MACHINE-VISION-WERKZEUGKISTE</p><h1>Fehler sichtbar machen.</h1><p>Vergleiche Bauteilbilder, markiere Auffälligkeiten und sammle eigene Fehlerbeispiele – direkt auf diesem Gerät.</p></section>
+<nav class="tabs" aria-label="Bereiche"><button class="tab active" data-tab="inspect">Prüfen</button><button class="tab" data-tab="dataset">Fehlerdatenbank <span id="sampleCount" class="count">0</span></button><button class="tab" data-tab="privacy">Datenschutz</button></nav>
+<section id="inspect" class="panel active">
+<div class="section-head"><div><p class="eyebrow">01 / BILDER</p><h2>Bauteile laden</h2></div><span class="step">01</span></div>
+<div class="upload-grid">
+<label class="upload-card"><span class="upload-icon">＋</span><strong>Referenzbild</strong><small>Gutteile / Ausgangsbild</small><input id="referenceInput" type="file" accept="image/*" capture="environment"></label>
+<label class="upload-card"><span class="upload-icon">＋</span><strong>Prüfbild</strong><small>Zu untersuchendes Bauteil</small><input id="testInput" type="file" accept="image/*" capture="environment"></label>
+</div>
+<div id="imageStatus" class="hint">Lade ein Referenzbild und ein Prüfbild. Für einen sinnvollen Vergleich sollten Perspektive, Abstand und Beleuchtung möglichst ähnlich sein.</div>
+<div class="section-head compact"><div><p class="eyebrow">02 / ANALYSE</p><h2>Bildvergleich</h2></div></div>
+<div class="controls"><label for="sensitivity">Empfindlichkeit <output id="sensitivityValue">35</output></label><input id="sensitivity" type="range" min="5" max="100" value="35"><div class="range-labels"><span>Weniger markieren</span><span>Mehr markieren</span></div><label class="checkline"><input type="checkbox" id="overlayToggle" checked> Unterschiede farbig überlagern</label><button id="compareBtn" class="primary" disabled>⟶ Bilder vergleichen</button></div>
+<div class="canvas-wrap"><div class="canvas-title"><strong>Analyseansicht</strong><span id="analysisState">Noch keine Analyse</span></div><canvas id="resultCanvas" width="900" height="600" aria-label="Analysebild"></canvas><div class="canvas-empty" id="canvasEmpty">Dein Analysebild erscheint hier.</div></div>
+<div class="hint warning">Hinweis: Der Vergleich basiert auf Pixelunterschieden, nicht auf einer trainierten KI. Licht, Schatten, Drehung und Kamerawinkel können Fehlalarme verursachen.</div>
+<div class="section-head compact"><div><p class="eyebrow">03 / ANNOTATION</p><h2>Fehler markieren</h2></div></div>
+<div class="annotation-box"><p>Ziehe mit dem Finger oder der Maus einen Rahmen um eine Fehlerstelle im Analysebild. Wähle davor die passende Fehlerklasse.</p><div class="field-row"><label>Fehlerklasse<select id="defectClass"><option>Beschädigung</option><option>Kratzer</option><option>Grat</option><option>Span / Fremdkörper</option><option>Oberflächenfehler</option><option>Bohrung / Kontur</option><option>Sonstiges</option></select></label><label>Bewertung<select id="verdict"><option value="NOK">NOK – Fehler</option><option value="OK">OK – Gutteil</option><option value="Review">Prüfen</option></select></label></div><div id="annotationList" class="annotation-list"><span class="muted">Noch keine Markierungen.</span></div></div>
+<div class="section-head compact"><div><p class="eyebrow">04 / SPEICHERN</p><h2>Prüfbeispiel ablegen</h2></div></div>
+<div class="save-box"><label>Bezeichnung (optional)<input id="sampleName" type="text" placeholder="z. B. Gehäuse – Grat an Bohrung"></label><button id="saveBtn" class="primary" disabled>Beispiel lokal speichern</button><p class="muted">Gespeichert wird nur in diesem Browser auf diesem Gerät.</p></div>
+</section>
+<section id="dataset" class="panel">
+<div class="section-head"><div><p class="eyebrow">DATENSAMMLUNG</p><h2>Deine Fehlerdatenbank</h2></div><span class="step">02</span></div>
+<p class="subtext">Hier sammelst du gelabelte Bilder für einen späteren KI-Trainingsdatensatz. Die Einträge bleiben auf diesem Gerät.</p>
+<div class="dataset-actions"><button id="exportBtn" class="primary" disabled>Datensatz exportieren</button><label class="secondary import-label">Datensatz importieren<input id="importInput" type="file" accept="application/json,.json"></label></div>
+<div id="datasetList" class="dataset-list"><div class="empty-state">Noch keine Beispiele gespeichert.</div></div>
+</section>
+<section id="privacy" class="panel">
+<div class="section-head"><div><p class="eyebrow">DATENSCHUTZ</p><h2>Lokal statt Cloud</h2></div><span class="step">03</span></div>
+<div class="privacy-card"><div class="privacy-icon">⌂</div><h3>Deine Bilder verlassen diese App nicht automatisch.</h3><p>Die Bilddateien und Datensätze werden im lokalen Browser-Speicher (IndexedDB) abgelegt. Diese Version enthält keine Upload-Funktion, keine Analyse-API und keine externen Tracking-Dienste.</p></div>
+<ul class="privacy-list"><li><strong>Kein Cloud-Upload</strong><span>Es wird nichts an GitHub oder einen anderen Server gesendet.</span></li><li><strong>Gerätegebunden</strong><span>iPhone und Pixel haben getrennte lokale Datenbanken. Es gibt keine automatische Synchronisierung.</span></li><li><strong>Browserdaten schützen</strong><span>Wenn du Website-Daten löschst oder der Browser Speicher freigibt, können lokale Beispiele verloren gehen. Exportiere regelmäßig Sicherungen.</span></li><li><strong>Website-Veröffentlichung</strong><span>Der App-Code kann auf einer öffentlichen GitHub-Pages-Adresse sichtbar sein. Das macht deine lokal gespeicherten Bilder nicht öffentlich.</span></li></ul>
+<div class="hint warning">Für vertrauliche Firmendaten nur nach Freigabe durch deinen Arbeitgeber verwenden. Ein lokaler Browser-Speicher ist kein zertifiziertes Archiv und schützt nicht vor Zugriff durch andere Personen mit Zugriff auf dein entsperrtes Gerät.</div>
+</section>
+</main>
+<footer>Defect Scanner · Prototyp 0.1 · Offline-fähig nach dem ersten Laden</footer>
+<div id="toast" role="status" aria-live="polite"></div>
+<script src="app.js"></script>
+</body></html>
